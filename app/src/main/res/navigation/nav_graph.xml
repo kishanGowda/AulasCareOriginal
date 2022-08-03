@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/supporFragment">
+
+    <fragment
+        android:id="@+id/homePage"
+        android:name="com.example.aulascare.AulasCareFragment.HomePage"
+        android:label="fragment_home_page"
+        tools:layout="@layout/fragment_home_page" />
+    <fragment
+        android:id="@+id/supporFragment"
+        android:name="com.example.aulascare.AulasCareFragment.SupporFragment"
+        android:label="fragment_suppor"
+        tools:layout="@layout/fragment_suppor" >
+        <action
+            android:id="@+id/action_supporFragment_to_viewConverationListFragment"
+            app:destination="@id/viewConverationListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewConverationListFragment"
+        android:name="com.example.aulascare.AulasCareFragment.ViewConverationListFragment"
+        android:label="fragment_view_converation_list"
+        tools:layout="@layout/fragment_view_converation_list" />
+</navigation>
