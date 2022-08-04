@@ -1,7 +1,17 @@
 package com.example.aulascare.AulasCareFragment;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -38,6 +48,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.DecimalFormat;
@@ -67,6 +78,7 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
 
 
     private static final String TAG = "SupporFragment";
+    ImageView timefilter;
     RecyclerView recyclerView, recyclerViewConersation;
     MaterialCardView noSubject;
     LinearLayoutManager linearLayoutManager;
@@ -97,6 +109,10 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         methodForBarGraph();
 
 
+
+        overAllMethod();
+        groupBarChart();
+
         int number = 100000000;
         double amounts = Double.parseDouble(String.valueOf(number));
         DecimalFormat formatter = new DecimalFormat("#,###.00");
@@ -106,6 +122,12 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         String k = "kishan";
         k = k.substring(1);
         Log.i(TAG, "onCreateView: " + k);
+        timefilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               filterbottomsheet();
+            }
+        });
         NavController navController = NavHostFragment.findNavController(this);
         viewAllText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,13 +140,56 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         return view;
     }
 
+    private void filterbottomsheet() {
+        view = getLayoutInflater().inflate(R.layout.week_bottomsheet, null);
+        TextView week = view.findViewById(R.id.o_week);
+        TextView month = view.findViewById(R.id.o_month);
+        ImageView weekTick = view.findViewById(R.id.week_tick);
+        ImageView monthTick = view.findViewById(R.id.month_tick);
+        BottomSheetDialog bt = new BottomSheetDialog(getActivity(), R.style.AppBottomSheetDialogTheme);
+        bt.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        bt.setContentView(view);
+        bt.setCanceledOnTouchOutside(true);
+        bt.getWindow().setGravity(Gravity.BOTTOM);
+        bt.setCanceledOnTouchOutside(true);
+        bt.show();
+        week.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                week.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto_bold));
+                month.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto));
+                weekTick.setVisibility(View.VISIBLE);
+                monthTick.setVisibility(View.GONE);
+            }
+        });
+        month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                week.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto));
+                month.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto_bold));
+                weekTick.setVisibility(View.VISIBLE);
+                monthTick.setVisibility(View.GONE);
+            }
+        });
+    }
+
     private void initViews() {
         noSubject = view.findViewById(R.id.nodata);
         viewAllText = view.findViewById(R.id.viewall);
         mChart = view.findViewById(R.id.barchart);
+        timefilter = view.findViewById(R.id.t_filter);
 
     }
 
+    public void groupBarChart() {
+        mChart = view.findViewById(R.id.barchart);
+        mChart.setDrawBarShadow(false);
+        mChart.getDescription().setEnabled(false);
+        mChart.setPinchZoom(false);
+        mChart.setTouchEnabled(true);
+        mChart.setDrawGridBackground(false);
+        mChart.setBackgroundColor(Color.WHITE);
+        mChart.setDrawGridBackground(false);
 
         public void groupBarChart() {
             barDataSet1 = new BarDataSet(getBarEntriesOne(), "Live Classes Scheduled");
@@ -271,7 +336,8 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
 
     }
 
- ;
+    ;
+
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         if (e == null)
