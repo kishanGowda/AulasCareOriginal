@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/supporFragment">
+    app:startDestination="@id/aulasCareSupport">
 
     <fragment
         android:id="@+id/homePage"
@@ -24,4 +24,20 @@
         android:name="com.example.aulascare.AulasCareFragment.ViewConverationListFragment"
         android:label="fragment_view_converation_list"
         tools:layout="@layout/fragment_view_converation_list" />
+    <fragment
+        android:id="@+id/fsqFragment"
+        android:name="com.example.aulascare.AulasCareFragment.FsqFragment"
+        android:label="fragment_fsq"
+        tools:layout="@layout/fragment_fsq" />
+    <fragment
+        android:id="@+id/aulasCareSupport"
+        android:name="com.example.aulascare.AulasCareFragment.AulasCareSupport"
+        android:label="AulasCareSupport" >
+        <action
+            android:id="@+id/action_aulasCareSupport_to_fsqFragment"
+            app:destination="@id/fsqFragment" />
+        <action
+            android:id="@+id/action_aulasCareSupport_to_supporFragment"
+            app:destination="@id/supporFragment" />
+    </fragment>
 </navigation>

@@ -47,6 +47,15 @@
             app:layout_constraintTop_toTopOf="@+id/back" />
 
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/faq_rv"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 </FrameLayout>

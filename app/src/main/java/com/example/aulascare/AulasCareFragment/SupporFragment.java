@@ -2,24 +2,28 @@ package com.example.aulascare.AulasCareFragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.aulascare.AdapterAulasCare.ConversetionAdapter;
 import com.example.aulascare.AdapterAulasCare.OverAllStateAdapter;
+import com.example.aulascare.Api.ApiClient;
+import com.example.aulascare.Api.GetUserDetailsResponse;
+import com.example.aulascare.Api.GetUserDetailsResponse;
+import com.example.aulascare.Api.LoginService;
 import com.example.aulascare.ModelClassAulasCare.ConversetionModelClass;
 import com.example.aulascare.ModelClassAulasCare.OverAllStateModel;
+import com.example.aulascare.ModelClassAulasCare.Vaccine;
 import com.example.aulascare.R;
 import com.example.aulascare.XYMarkerView;
 import com.github.mikephil.charting.charts.BarChart;
@@ -37,52 +41,76 @@ import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class SupporFragment extends Fragment implements OnChartValueSelectedListener {
-    
-    
+
+
     View view;
     TextView viewAllText;
     BarChart mChart;
+    GetUserDetailsResponse g;
+
+    //
+    // variable for our bar data set.
+    BarDataSet barDataSet1, barDataSet2;
+    // array list for storing entries.
+    ArrayList barEntries;
+
+
     private static final String TAG = "SupporFragment";
-    RecyclerView recyclerView,recyclerViewConersation;
+    RecyclerView recyclerView, recyclerViewConersation;
     MaterialCardView noSubject;
     LinearLayoutManager linearLayoutManager;
     OverAllStateAdapter adapter;
     ArrayList<ConversetionModelClass> conversetionModelClass;
     ConversetionAdapter conversetionAdapter;
     ArrayList<OverAllStateModel> overAllStateModels;
+    LoginService loginService;
+    Retrofit retrofit;
+    ArrayList<String> labels;
+
+    HashMap<String, String> query;
+
     public SupporFragment() {
         // Required empty public constructor
     }
 
-    
-  
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view= inflater.inflate(R.layout.fragment_suppor, container, false);
+        view = inflater.inflate(R.layout.fragment_suppor, container, false);
         initViews();
-        overAllMethod();
-        groupBarChart();
 
-        int number=100000000;
+        apiInIt();
+        method();
+        methodForBarGraph();
+
+
+        int number = 100000000;
         double amounts = Double.parseDouble(String.valueOf(number));
         DecimalFormat formatter = new DecimalFormat("#,###.00");
-        String ff=String.valueOf(formatter.format(amounts));
-        Log.i(TAG, "onCreateView: "+ff);
+        String ff = String.valueOf(formatter.format(amounts));
+        Log.i(TAG, "onCreateView: " + ff);
 
-        String k="kishan";
-        k=k.substring(1);
-        Log.i(TAG, "onCreateView: "+k);
+        String k = "kishan";
+        k = k.substring(1);
+        Log.i(TAG, "onCreateView: " + k);
         NavController navController = NavHostFragment.findNavController(this);
         viewAllText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections navDirections=SupporFragmentDirections.actionSupporFragmentToViewConverationListFragment();
+                NavDirections navDirections = SupporFragmentDirections.actionSupporFragmentToViewConverationListFragment();
                 navController.navigate(navDirections);
             }
         });
@@ -91,122 +119,135 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
     }
 
     private void initViews() {
-        noSubject=view.findViewById(R.id.nodata);
-        viewAllText=view.findViewById(R.id.viewall);
-        mChart =view.findViewById(R.id.barchart);
+        noSubject = view.findViewById(R.id.nodata);
+        viewAllText = view.findViewById(R.id.viewall);
+        mChart = view.findViewById(R.id.barchart);
 
     }
 
-    public void groupBarChart()  {
-        mChart =  view.findViewById(R.id.barchart);
-        mChart.setDrawBarShadow(false);
-        mChart.getDescription().setEnabled(false);
-        mChart.setPinchZoom(false);
-        mChart.setTouchEnabled(true);
-        mChart.setDrawGridBackground(false);
-        mChart.setBackgroundColor(Color.WHITE);
-        mChart.setDrawGridBackground(false);
 
+        public void groupBarChart() {
+            barDataSet1 = new BarDataSet(getBarEntriesOne(), "Live Classes Scheduled");
+            barDataSet1.setColor(Color.parseColor("#99DED9"));
+            barDataSet2 = new BarDataSet(getBarEntriesTwo(), "Completed");
+            barDataSet2.setColor(Color.parseColor("#B2DFFF"));
+//            barDataSet3 = new BarDataSet(getBarEntriesThree(), "Cancelled");
+//            barDataSet3.setColor(Color.parseColor("#AEAEAE"));
 
-        mChart.setDrawBarShadow(false);
-        mChart.setDrawValueAboveBar(true);
+            // below line is to add bar data set to our bar data.
+            BarData data = new BarData(barDataSet1, barDataSet2);
 
+            // after adding data to our bar data we
+            // are setting that data to our bar chart.
+            mChart.setData(data);
 
+            // below line is to remove description
+            // label of our bar chart.
+            mChart.getDescription().setEnabled(false);
 
+            // below line is to get x axis
+            // of our bar chart.
+            XAxis xAxis = mChart.getXAxis();
 
+            // below line is to set value formatter to our x-axis and
+            // we are adding our days to our x axis.
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
 
+            // below line is to set center axis
+            // labels to our bar chart.
+            xAxis.setCenterAxisLabels(true);
 
-        String[] labels = { "11/07", "12/07", "13/07", "14/07", "15/07", "16/07","17/07",""};
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(true);
-        xAxis.setTextColor(Color.BLACK);
-        xAxis.setTextSize(12);
-        xAxis.setAxisLineColor(Color.WHITE);
-        xAxis.setAxisMinimum(1f);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+            // below line is to set position
+            // to our x-axis to bottom.
 
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setTextSize(12);
-        leftAxis.setAxisLineColor(Color.WHITE);
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setGranularity(2);
-        leftAxis.setLabelCount(8, true);
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            // below line is to set granularity
+            // to our x axis labels.
+            xAxis.setGranularity(1);
+            xAxis.setDrawGridLines(false);
 
-        mChart.getAxisRight().setEnabled(true);
-        mChart.getLegend().setEnabled(true);
+            // below line is to enable
+            // granularity to our x axis.
+            xAxis.setGranularityEnabled(true);
 
-        float[] valOne = {40, 40, 40, 82, 60};
-        float[] valTwo = {25, 25, 45, 20, 20};
+            // below line is to make our
+            // bar chart as draggable.
+            mChart.setDragEnabled(true);
 
+            // below line is to make visible
+            // range for our bar chart.
+            mChart.setVisibleXRangeMaximum(4);
 
-        ArrayList<BarEntry> barOne = new ArrayList<>();
-        ArrayList<BarEntry> barTwo = new ArrayList<>();
+            // below line is to add bar
+            // space to our chart.
+            float barSpace = 0f;
 
-        for (int i = 0; i < valOne.length; i++) {
-            barOne.add(new BarEntry(i, valOne[i]));
-            barTwo.add(new BarEntry(i, valTwo[i]));
-//            barThree.add(new BarEntry(i, valThree[i]));
+            // below line is use to add group
+            // spacing to our bar chart.
+            float groupSpace = 0.60f;
+
+            // we are setting width of
+            // bar in below line.
+            data.setBarWidth(0.20f);
+
+            // below line is to set minimum
+            // axis to our chart.
+            mChart.getXAxis().setAxisMinimum(0);
+
+            // below line is to
+            // animate our chart.
+            mChart.animate();
+
+            // below line is to group bars
+            // and add spacing to it.
+            mChart.groupBars(0, groupSpace, barSpace);
+
+            // below line is to invalidate
+            // our bar chart.
+            mChart.invalidate();
+
+            XYMarkerView mv = new XYMarkerView(getContext(),new IndexAxisValueFormatter() );
+            mv.setChartView(mChart); // For bounds control
+            mChart.setMarker(mv);
+
         }
 
-        BarDataSet set1 = new BarDataSet(barOne, "barOne");
-        set1.setColor(Color.argb( 250, 152, 118,230));
-        BarDataSet set2 = new BarDataSet(barTwo, "barTwo");
-        set2.setColor(Color.rgb(16, 137, 255));
-//        BarDataSet set3 = new BarDataSet(barThree, "barTwo");
-//        set3.setColor(Color.RED);
+        private ArrayList<BarEntry> getBarEntriesOne() {
 
-        set1.setHighlightEnabled(true);
-        set2.setHighlightEnabled(true);
-        // set3.setHighlightEnabled(true);
-        set1.setDrawValues(true);
-        set2.setDrawValues(true);
-        //  set3.setDrawValues(true);
+            // creating a new array list
+            barEntries = new ArrayList<>();
 
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        dataSets.add(set1);
-        dataSets.add(set2);
-        //   dataSets.add(set3);
-        BarData data = new BarData(dataSets);
-        float groupSpace = 0.2f;
-        float barSpace = 0f;
-        float barWidth = 0.3f;
-        // (barSpace + barWidth) * 2 + groupSpace = 1
-        data.setBarWidth(barWidth);
-        // so that the entire chart is shown when scrolled from right to left
-        xAxis.setAxisMaximum(labels.length - 0.5f);
-        mChart.setData(data);
-        mChart.setScaleEnabled(false);
-        mChart.setVisibleXRangeMaximum(7f);
-        mChart.groupBars(1f, groupSpace, barSpace);
-        mChart.invalidate();
+            // adding new entry to our array list with bar
+            // entry and passing x and y axis value to it.
+            for (int i = 0; i < g.summary.size(); i++) {
+                barEntries.add(new BarEntry(Float.parseFloat(i + "f"), g.summary.get(i).closeCount));
+            }
 
+            return barEntries;
+        }
 
-        XYMarkerView mv = new XYMarkerView(getContext(),new IndexAxisValueFormatter() );
-        mv.setChartView(mChart); // For bounds control
-        mChart.setMarker(mv);
+        // array list for second set.
+        private ArrayList<BarEntry> getBarEntriesTwo() {
 
-    }
+            // creating a new array list
+            barEntries = new ArrayList<>();
+
+            // adding new entry to our array list with bar
+            // entry and passing x and y axis value to it.
+            for (int i = 0; i < g.summary.size(); i++) {
+                barEntries.add(new BarEntry(Float.parseFloat(i + "f"), g.summary.get(i).openCount));
+            }
+            return barEntries;
+        }
 
 
 
-    private void overAllMethod() {
-        overAllStateModels=new ArrayList<>();
-        overAllStateModels.add(new OverAllStateModel(R.drawable.chat, "0", "Total conversations", String.valueOf(-0 + "  From last week")));
-        overAllStateModels.add(new OverAllStateModel(R.drawable.closedconversations, "0", "Closed conversations", String.valueOf(0 + "  From last week")));
-        overAllStateModels.add(new OverAllStateModel(R.drawable.openconversations, "0", "Open conversations", String.valueOf(10+ "  From last week")));
-        buildRecyclerView();
 
-        conversetionModelClass=new ArrayList<>();
-        conversetionModelClass.add(new ConversetionModelClass("kk","knkn","djb","jbdh","hdh","svhvx",23));
-        conversetionModelClass.add(new ConversetionModelClass("kk","knkn","djb","jbdh","hdh","svhvx",23));
-        conversetionModelClass.add(new ConversetionModelClass("kk","knkn","djb","jbdh","hdh","svhvx",23));
-        buildRecyclerViewConversetion();
 
-    }
+
+
+
+
 
     public void buildRecyclerView() {
 
@@ -235,12 +276,8 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
     public void onValueSelected(Entry e, Highlight h) {
         if (e == null)
             return;
-
-
         mChart.getBarBounds((BarEntry) e);
         MPPointF position = mChart.getPosition(e, YAxis.AxisDependency.LEFT);
-
-
         Log.i("position", position.toString());
 
         Log.i("x-index",
@@ -254,4 +291,84 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
     public void onNothingSelected() {
 
     }
+
+
+    public void apiInIt() {
+        retrofit = ApiClient.getRetrofit();
+        loginService= ApiClient.getApiService();
+    }
+
+    private void method() {
+    query=new HashMap<>();
+        Call<GetUserDetailsResponse> call=loginService.GET_USER_DETAILS_RESPONSE_CALL(query);
+        call.enqueue(new Callback<GetUserDetailsResponse>() {
+            @Override
+            public void onResponse(Call<GetUserDetailsResponse> call, Response<GetUserDetailsResponse> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity(), response.code(), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    GetUserDetailsResponse getCareDataAdminResponse = response.body();
+
+                    overAllStateModels=new ArrayList<>();
+                    overAllStateModels.add(new OverAllStateModel(R.drawable.chat, String.valueOf(getCareDataAdminResponse.totalCount), "Total conversations", String.valueOf(String.valueOf(getCareDataAdminResponse.lastweekTotalCount) + "  From last week")));
+                    overAllStateModels.add(new OverAllStateModel(R.drawable.closedconversations, String.valueOf(getCareDataAdminResponse.closeCount), "Closed conversations", String.valueOf(String.valueOf(getCareDataAdminResponse.lastWeekCloseCount)+ "  From last week")));
+                    overAllStateModels.add(new OverAllStateModel(R.drawable.openconversations, String.valueOf(getCareDataAdminResponse.openCount), "Open conversations", String.valueOf(String.valueOf(getCareDataAdminResponse.lastWeekOpenCount)+ "  From last week")));
+                    buildRecyclerView();
+
+                    if(getCareDataAdminResponse.details!=null){
+                        conversetionModelClass=new ArrayList<>();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
+                        labels = new ArrayList<>() ;
+                        for (int i=0;i<=getCareDataAdminResponse.details.size()-1;i++){
+                            conversetionModelClass.add(new ConversetionModelClass(getCareDataAdminResponse.details.get(i).user_name,getCareDataAdminResponse.details.get(i).user_role,"djb",getCareDataAdminResponse.details.get(i).chat_createdAt,getCareDataAdminResponse.details.get(i).user_image,"svhvx",23));
+
+                        }
+                        buildRecyclerViewConversetion();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserDetailsResponse> call, Throwable t) {
+                Log.i(TAG, String.valueOf(t.toString()));
+            }
+        });
+    }
+
+    private void methodForBarGraph() {
+        query=new HashMap<>();
+        query.put("type","month");
+        Call<GetUserDetailsResponse> call=loginService.GET_USER_DETAILS_RESPONSE_CALL(query);
+        call.enqueue(new Callback<GetUserDetailsResponse>() {
+            @Override
+            public void onResponse(Call<GetUserDetailsResponse> call, Response<GetUserDetailsResponse> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity(), response.code(), Toast.LENGTH_SHORT).show();
+                }
+               else {
+                   g=response.body();
+                    if (g.summary != null) {
+                        labels=new ArrayList<>();
+                        try{
+                            for (int i=0;i<=g.summary.size()-1;i++){
+                                labels.add(g.summary.get(i).month);
+                                groupBarChart();
+                            }
+
+                        }catch (Exception e){
+                            Log.i(TAG, "onResponse: "+e.getMessage());
+                        }
+                    }
+                }
+  }
+
+            @Override
+            public void onFailure(Call<GetUserDetailsResponse> call, Throwable t) {
+                Log.i(TAG, String.valueOf(t.toString()));
+            }
+        });
+    }
+
 }
