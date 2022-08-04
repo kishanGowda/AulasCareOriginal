@@ -2,13 +2,12 @@ package com.example.aulascare.ModelClassAulasCare;
 
 public class Vaccine {
     private String vaccineName,vaccineDescription;
-    private int vaccineImageResource;
+
     private boolean expanded;
 
-    public Vaccine(String vaccineName, String vaccineDescription, int vaccineImageResource) {
+    public Vaccine(String vaccineName, String vaccineDescription) {
         this.vaccineName = vaccineName;
         this.vaccineDescription = vaccineDescription;
-        this.vaccineImageResource = vaccineImageResource;
         this.expanded = false;
     }
 
@@ -28,7 +27,5 @@ public class Vaccine {
         return vaccineDescription;
     }
 
-    public int getVaccineImageResource() {
-        return vaccineImageResource;
-    }
+
 }
