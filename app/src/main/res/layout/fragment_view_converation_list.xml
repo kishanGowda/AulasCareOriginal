@@ -155,6 +155,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/allfilterImg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -169,6 +170,32 @@
                     android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/black"
                     android:text="All" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/allClasses_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/allclassImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/sort" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textColor="@color/black"
+                    android:text="All Classes" />
 
             </LinearLayout>
         </LinearLayout>

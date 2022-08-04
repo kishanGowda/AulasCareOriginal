@@ -1,20 +1,23 @@
 package com.example.aulascare.AulasCareFragment;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.aulascare.AdapterAulasCare.ConversetionAdapter;
 import com.example.aulascare.AdapterAulasCare.OverAllStateAdapter;
@@ -34,55 +37,63 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class SupporFragment extends Fragment implements OnChartValueSelectedListener {
-    
-    
+
+
     View view;
     TextView viewAllText;
     BarChart mChart;
     private static final String TAG = "SupporFragment";
-    RecyclerView recyclerView,recyclerViewConersation;
+    ImageView timefilter;
+    RecyclerView recyclerView, recyclerViewConersation;
     MaterialCardView noSubject;
     LinearLayoutManager linearLayoutManager;
     OverAllStateAdapter adapter;
     ArrayList<ConversetionModelClass> conversetionModelClass;
     ConversetionAdapter conversetionAdapter;
     ArrayList<OverAllStateModel> overAllStateModels;
+
     public SupporFragment() {
         // Required empty public constructor
     }
 
-    
-  
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view= inflater.inflate(R.layout.fragment_suppor, container, false);
+        view = inflater.inflate(R.layout.fragment_suppor, container, false);
         initViews();
+
         overAllMethod();
         groupBarChart();
 
-        int number=100000000;
+        int number = 100000000;
         double amounts = Double.parseDouble(String.valueOf(number));
         DecimalFormat formatter = new DecimalFormat("#,###.00");
-        String ff=String.valueOf(formatter.format(amounts));
-        Log.i(TAG, "onCreateView: "+ff);
+        String ff = String.valueOf(formatter.format(amounts));
+        Log.i(TAG, "onCreateView: " + ff);
 
-        String k="kishan";
-        k=k.substring(1);
-        Log.i(TAG, "onCreateView: "+k);
+        String k = "kishan";
+        k = k.substring(1);
+        Log.i(TAG, "onCreateView: " + k);
+        timefilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               filterbottomsheet();
+            }
+        });
         NavController navController = NavHostFragment.findNavController(this);
         viewAllText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections navDirections=SupporFragmentDirections.actionSupporFragmentToViewConverationListFragment();
+                NavDirections navDirections = SupporFragmentDirections.actionSupporFragmentToViewConverationListFragment();
                 navController.navigate(navDirections);
             }
         });
@@ -90,15 +101,49 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         return view;
     }
 
+    private void filterbottomsheet() {
+        view = getLayoutInflater().inflate(R.layout.week_bottomsheet, null);
+        TextView week = view.findViewById(R.id.o_week);
+        TextView month = view.findViewById(R.id.o_month);
+        ImageView weekTick = view.findViewById(R.id.week_tick);
+        ImageView monthTick = view.findViewById(R.id.month_tick);
+        BottomSheetDialog bt = new BottomSheetDialog(getActivity(), R.style.AppBottomSheetDialogTheme);
+        bt.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        bt.setContentView(view);
+        bt.setCanceledOnTouchOutside(true);
+        bt.getWindow().setGravity(Gravity.BOTTOM);
+        bt.setCanceledOnTouchOutside(true);
+        bt.show();
+        week.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                week.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto_bold));
+                month.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto));
+                weekTick.setVisibility(View.VISIBLE);
+                monthTick.setVisibility(View.GONE);
+            }
+        });
+        month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                week.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto));
+                month.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto_bold));
+                weekTick.setVisibility(View.VISIBLE);
+                monthTick.setVisibility(View.GONE);
+            }
+        });
+    }
+
     private void initViews() {
-        noSubject=view.findViewById(R.id.nodata);
-        viewAllText=view.findViewById(R.id.viewall);
-        mChart =view.findViewById(R.id.barchart);
+        noSubject = view.findViewById(R.id.nodata);
+        viewAllText = view.findViewById(R.id.viewall);
+        mChart = view.findViewById(R.id.barchart);
+        timefilter = view.findViewById(R.id.t_filter);
 
     }
 
-    public void groupBarChart()  {
-        mChart =  view.findViewById(R.id.barchart);
+    public void groupBarChart() {
+        mChart = view.findViewById(R.id.barchart);
         mChart.setDrawBarShadow(false);
         mChart.getDescription().setEnabled(false);
         mChart.setPinchZoom(false);
@@ -112,11 +157,7 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         mChart.setDrawValueAboveBar(true);
 
 
-
-
-
-
-        String[] labels = { "11/07", "12/07", "13/07", "14/07", "15/07", "16/07","17/07",""};
+        String[] labels = {"11/07", "12/07", "13/07", "14/07", "15/07", "16/07", "17/07", ""};
         XAxis xAxis = mChart.getXAxis();
         xAxis.setCenterAxisLabels(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -153,7 +194,7 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         }
 
         BarDataSet set1 = new BarDataSet(barOne, "barOne");
-        set1.setColor(Color.argb( 250, 152, 118,230));
+        set1.setColor(Color.argb(250, 152, 118, 230));
         BarDataSet set2 = new BarDataSet(barTwo, "barTwo");
         set2.setColor(Color.rgb(16, 137, 255));
 //        BarDataSet set3 = new BarDataSet(barThree, "barTwo");
@@ -185,25 +226,24 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         mChart.invalidate();
 
 
-        XYMarkerView mv = new XYMarkerView(getContext(),new IndexAxisValueFormatter() );
+        XYMarkerView mv = new XYMarkerView(getContext(), new IndexAxisValueFormatter());
         mv.setChartView(mChart); // For bounds control
         mChart.setMarker(mv);
 
     }
 
 
-
     private void overAllMethod() {
-        overAllStateModels=new ArrayList<>();
+        overAllStateModels = new ArrayList<>();
         overAllStateModels.add(new OverAllStateModel(R.drawable.chat, "0", "Total conversations", String.valueOf(-0 + "  From last week")));
         overAllStateModels.add(new OverAllStateModel(R.drawable.closedconversations, "0", "Closed conversations", String.valueOf(0 + "  From last week")));
-        overAllStateModels.add(new OverAllStateModel(R.drawable.openconversations, "0", "Open conversations", String.valueOf(10+ "  From last week")));
+        overAllStateModels.add(new OverAllStateModel(R.drawable.openconversations, "0", "Open conversations", String.valueOf(10 + "  From last week")));
         buildRecyclerView();
 
-        conversetionModelClass=new ArrayList<>();
-        conversetionModelClass.add(new ConversetionModelClass("kk","knkn","djb","jbdh","hdh","svhvx",23));
-        conversetionModelClass.add(new ConversetionModelClass("kk","knkn","djb","jbdh","hdh","svhvx",23));
-        conversetionModelClass.add(new ConversetionModelClass("kk","knkn","djb","jbdh","hdh","svhvx",23));
+        conversetionModelClass = new ArrayList<>();
+        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
+        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
+        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
         buildRecyclerViewConversetion();
 
     }
@@ -230,7 +270,8 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
 
     }
 
- ;
+    ;
+
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         if (e == null)

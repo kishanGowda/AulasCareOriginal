@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Govindraj/AndroidStudioProjects/AulasCareOriginal/app/src/main/res/drawable-v24/background_shape_for_bottomsheet.xml" value="0.139" />
+        <entry key="..\:/Users/Govindraj/AndroidStudioProjects/AulasCareOriginal/app/src/main/res/layout/allfilter_bottomsheet.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Govindraj/AndroidStudioProjects/AulasCareOriginal/app/src/main/res/layout/fragment_suppor.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Govindraj/AndroidStudioProjects/AulasCareOriginal/app/src/main/res/layout/fragment_view_converation_list.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Govindraj/AndroidStudioProjects/AulasCareOriginal/app/src/main/res/layout/week_bottomsheet.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Kishan/AndroidStudioProjects/AulasCare/app/src/main/res/drawable-v24/ovel.xml" value="0.186" />
         <entry key="..\:/Users/Kishan/AndroidStudioProjects/AulasCare/app/src/main/res/drawable/circle.xml" value="0.186" />
         <entry key="..\:/Users/Kishan/AndroidStudioProjects/AulasCare/app/src/main/res/drawable/img.xml" value="0.186" />
