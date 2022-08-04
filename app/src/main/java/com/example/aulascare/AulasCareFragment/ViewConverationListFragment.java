@@ -46,13 +46,28 @@ public class ViewConverationListFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_view_converation_list, container, false);
         InitViews();
+        overAllMethod();
         allfilterImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 allfilterBottomSheet();
             }
         });
-        overAllMethod();
+        allClassLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view = getLayoutInflater().inflate(R.layout.all_class_bottomsheet, null);
+                BottomSheetDialog bt = new BottomSheetDialog(getActivity(), R.style.AppBottomSheetDialogTheme);
+                bt.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                bt.setContentView(view);
+                bt.setCanceledOnTouchOutside(true);
+                bt.getWindow().setGravity(Gravity.BOTTOM);
+                bt.setCanceledOnTouchOutside(true);
+                bt.show();
+            }
+        });
+
+
 
         return view;
     }
