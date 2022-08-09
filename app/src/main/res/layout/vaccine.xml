@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/vaccineImage"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/vaccineName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="TextView"
+                android:textColor="#191919"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/vaccineImage"
+                app:layout_constraintTop_toTopOf="@+id/vaccineImage" />
+
+            <TextView
+                android:id="@+id/vaccineDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/roboto"
+                android:text="TextView"
+                android:textColor="#AEAEAE"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/vaccineImage"
+                app:layout_constraintTop_toBottomOf="@+id/vaccineName" />
+
+            <ImageView
+                android:id="@+id/imgMore"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginRight="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vaccineDescription"
+                app:srcCompat="@android:drawable/arrow_up_float" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/expandableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+            <TextView
+                android:id="@+id/txtDetailedDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginRight="24dp"
+                android:fontFamily="@font/roboto"
+                android:text="Covishield is the Indian-made version of AstraZeneca’s jab and is the most widely used vaccine in India. It is being locally manufactured by SII (Serum Institute of India). When injected, the vaccine prompts the immune system to start making antibodies and primes it to attack any coronavirus infection. Covishield is administered in two doses and is ideally given between four and 12 weeks apart. It was found that the vaccine is 70% effective after the first dose and 90% after the second dose."
+                android:textColor="#636363"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtSource1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/roboto"
+                android:text="Source: "
+                android:textColor="#AEAEAE"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtDetailedDescription" />
+
+            <TextView
+                android:id="@+id/txtbbc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="bbc.com"
+                android:textColor="#AEAEAE"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/txtSource1"
+                app:layout_constraintTop_toBottomOf="@+id/txtDetailedDescription" />
+
+            <Button
+                android:id="@+id/btnKnowMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="32dp"
+                android:backgroundTint="#594099"
+                android:fontFamily="@font/roboto_bold"
+                android:text="KNOW MORE"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                app:cornerRadius="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtbbc" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

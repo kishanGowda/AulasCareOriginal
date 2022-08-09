@@ -51,9 +51,13 @@ import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -69,6 +73,9 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
     TextView viewAllText;
     BarChart mChart;
     GetUserDetailsResponse g;
+
+    String startDate;
+    String endDate;
 
     //
     // variable for our bar data set.
@@ -108,10 +115,7 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         method();
         methodForBarGraph();
 
-
-
-        overAllMethod();
-        groupBarChart();
+        //groupBarChart();
 
         int number = 100000000;
         double amounts = Double.parseDouble(String.valueOf(number));
@@ -160,7 +164,17 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
                 month.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto));
                 weekTick.setVisibility(View.VISIBLE);
                 monthTick.setVisibility(View.GONE);
-            }
+                Calendar c = GregorianCalendar.getInstance();
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+                startDate = df.format(c.getTime());
+                c.add(Calendar.DAY_OF_WEEK-1, -6);
+                endDate = df.format(c.getTime());
+                System.out.println("Start Date = " + startDate);
+                System.out.println("End Date = " + endDate);
+                methodForBarGraphWeek();
+
+                           }
         });
         month.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +183,7 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
                 month.setTypeface(ResourcesCompat.getFont(getContext(),R.font.roboto_bold));
                 weekTick.setVisibility(View.VISIBLE);
                 monthTick.setVisibility(View.GONE);
+
             }
         });
     }
@@ -181,7 +196,9 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
 
     }
 
-    public void groupBarChart() {
+
+
+        public void groupBarChart() {
         mChart = view.findViewById(R.id.barchart);
         mChart.setDrawBarShadow(false);
         mChart.getDescription().setEnabled(false);
@@ -190,8 +207,6 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
         mChart.setDrawGridBackground(false);
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
-
-        public void groupBarChart() {
             barDataSet1 = new BarDataSet(getBarEntriesOne(), "Live Classes Scheduled");
             barDataSet1.setColor(Color.parseColor("#99DED9"));
             barDataSet2 = new BarDataSet(getBarEntriesTwo(), "Completed");
@@ -420,8 +435,9 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
                         try{
                             for (int i=0;i<=g.summary.size()-1;i++){
                                 labels.add(g.summary.get(i).month);
-                                groupBarChart();
+
                             }
+                            groupBarChart();
 
                         }catch (Exception e){
                             Log.i(TAG, "onResponse: "+e.getMessage());
@@ -429,6 +445,44 @@ public class SupporFragment extends Fragment implements OnChartValueSelectedList
                     }
                 }
   }
+
+            @Override
+            public void onFailure(Call<GetUserDetailsResponse> call, Throwable t) {
+                Log.i(TAG, String.valueOf(t.toString()));
+            }
+        });
+    }
+
+
+    private void methodForBarGraphWeek() {
+        query=new HashMap<>();
+        query.put("type","week");
+        query.put("startDate",startDate);
+        query.put("endDate",endDate);
+        Call<GetUserDetailsResponse> call=loginService.GET_USER_DETAILS_RESPONSE_CALL(query);
+        call.enqueue(new Callback<GetUserDetailsResponse>() {
+            @Override
+            public void onResponse(Call<GetUserDetailsResponse> call, Response<GetUserDetailsResponse> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity(), response.code(), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    g=response.body();
+                    if (g.summary != null) {
+                        labels=new ArrayList<>();
+                        try{
+                            for (int i=0;i<=g.summary.size()-1;i++){
+                                labels.add(g.summary.get(i).month);
+
+                            }
+                            groupBarChart();
+
+                        }catch (Exception e){
+                            Log.i(TAG, "onResponse: "+e.getMessage());
+                        }
+                    }
+                }
+            }
 
             @Override
             public void onFailure(Call<GetUserDetailsResponse> call, Throwable t) {

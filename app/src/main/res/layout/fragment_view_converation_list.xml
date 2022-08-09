@@ -9,55 +9,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/schFilterRecyclerLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="18dp"
-          android:layout_marginTop="12dp"
-          android:orientation="horizontal">
-
-          <View
-              android:layout_width="0dp"
-              android:layout_height="3dp"
-              android:layout_marginStart="6dp"
-              android:layout_marginTop="8dp"
-              android:layout_weight="01"
-              android:background="#AEAEAE" />
-          <TextView
-              android:id="@+id/contect_tv"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginStart="8dp"
-              android:textStyle="bold"
-              android:textColor="#AEAEAE"
-              android:layout_weight=".1"
-              android:text="OPEN (4)"
-              android:textSize="10dp" />
-
-          <View
-
-              android:layout_width="0dp"
-              android:layout_height="3dp"
-              android:layout_marginStart="6dp"
-              android:layout_marginTop="8dp"
-              android:layout_weight="01"
-              android:background="#AEAEAE" />
-
-      </LinearLayout>
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/openrv"/>
 
 
         <LinearLayout
@@ -73,16 +29,62 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="01"
                 android:background="#AEAEAE" />
+
+            <TextView
+                android:id="@+id/contect_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight=".1"
+                android:text="OPEN (4)"
+                android:textColor="#AEAEAE"
+                android:textSize="10dp"
+                android:textStyle="bold" />
+
+            <View
+
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="01"
+                android:background="#AEAEAE" />
+
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/openrv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="01"
+                android:background="#AEAEAE" />
+
             <TextView
                 android:id="@+id/close_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:textStyle="bold"
-                android:textColor="#AEAEAE"
                 android:layout_weight=".1"
                 android:text="CLOSE (4)"
-                android:textSize="10dp" />
+                android:textColor="#AEAEAE"
+                android:textSize="10dp"
+                android:textStyle="bold" />
 
             <View
 
@@ -97,10 +99,11 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/closerv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/closerv"/>
+            android:layout_weight="1"
+            android:orientation="vertical" />
 
     </LinearLayout>
 

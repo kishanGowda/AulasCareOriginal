@@ -23,6 +23,10 @@ public interface LoginService {
 //
     @Headers({token, link})
     @GET("care/admin")
-    Call<GetUserDetailsResponse> GET_USER_DETAILS_RESPONSE_CALL(@QueryMap Map<String,String> quesry);
+    Call<GetUserDetailsResponse> GET_USER_DETAILS_RESPONSE_CALL(@QueryMap Map<String,String> query);
+
+    @Headers({token, link})
+    @GET("care/admin/user-conversation")
+    Call<GetStatusAndChatResponse> GET_STATUS_AND_CHAT_RESPONSE_CALL(@QueryMap Map<String,String> query);
 //}
 }

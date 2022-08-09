@@ -1,24 +1,25 @@
-package com.example.aulascare.AdapterAulasCare;
+package com.example.aulascare.AulasCareStudent.Adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.aulascare.ModelClassAulasCare.Vaccine;
+import com.example.aulascare.AulasCareStudent.ModelClass.Vaccine;
 import com.example.aulascare.R;
 
 import java.util.ArrayList;
 
-public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder>{
+public class CardAdapterTwo extends RecyclerView.Adapter<CardAdapterTwo.CardViewHolder>{
 
     ArrayList<Vaccine> cardInfo;
 
-    public CardAdapter(ArrayList<Vaccine> cardInfo) {
+    public CardAdapterTwo(ArrayList<Vaccine> cardInfo) {
         this.cardInfo = cardInfo;
     }
 
@@ -26,7 +27,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.raq_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vaccine,parent,false);
         CardViewHolder cvh = new CardViewHolder(view);
         return cvh;
     }
@@ -35,7 +36,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         Vaccine currentVaccine = this.cardInfo.get(position);
 
-
+        holder.vaccineImage.setImageResource(currentVaccine.getVaccineImageResource());
         holder.vaccineName.setText(currentVaccine.getVaccineName());
         holder.vaccineDescription.setText(currentVaccine.getVaccineDescription());
 
@@ -60,8 +61,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            vaccineName = itemView.findViewById(R.id.question);
-            vaccineDescription = itemView.findViewById(R.id.txtDetailedDescription);
+            vaccineImage = itemView.findViewById(R.id.vaccineImage);
+            vaccineName = itemView.findViewById(R.id.vaccineName);
+            vaccineDescription = itemView.findViewById(R.id.vaccineDescription);
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
             dropDown = itemView.findViewById(R.id.imgMore);
             dropDown.setOnClickListener(new View.OnClickListener() {

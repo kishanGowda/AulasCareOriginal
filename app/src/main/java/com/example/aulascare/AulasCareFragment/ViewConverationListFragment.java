@@ -3,6 +3,7 @@ package com.example.aulascare.AulasCareFragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -17,22 +19,35 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aulascare.AdapterAulasCare.ConversetionAdapter;
+import com.example.aulascare.Api.ApiClient;
+import com.example.aulascare.Api.GetStatusAndChatResponse;
+import com.example.aulascare.Api.LoginService;
 import com.example.aulascare.ModelClassAulasCare.ConversetionModelClass;
 import com.example.aulascare.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class ViewConverationListFragment extends Fragment {
     View view;
-    RecyclerView recyclerViewConersation;
-    LinearLayoutManager linearLayoutManager;
+    Retrofit retrofit;
+    RecyclerView recyclerViewConersation,closeRv;
+    LinearLayoutManager linearLayoutManager,closeLiner;
     ConversetionAdapter conversetionAdapter;
     ImageView allfilterImg;
-
+    LoginService loginService;
+    CloseAdapter closeAdapter;
+    private static final String TAG = "ViewConverationListFrag";
+    HashMap<String,String> query;
     LinearLayout allClassLayout;
-    ArrayList<ConversetionModelClass> conversetionModelClass;
+    ArrayList<ConversetionModelClass> conversetionModelClass,closeModel;
 
 
     public ViewConverationListFragment() {
@@ -53,6 +68,8 @@ public class ViewConverationListFragment extends Fragment {
             }
         });
         overAllMethod();
+        apiInIt();
+        mathod();
 
         return view;
     }
@@ -187,15 +204,21 @@ public class ViewConverationListFragment extends Fragment {
     private void InitViews() {
         allfilterImg = view.findViewById(R.id.allfilterImg);
         allClassLayout = view.findViewById(R.id.allClasses_layout);
+
     }
+    public void apiInIt() {
+        retrofit = ApiClient.getRetrofit();
+        loginService= ApiClient.getApiService();
+    }
+
 
     private void overAllMethod() {
 
-        conversetionModelClass = new ArrayList<>();
-        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
-        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
-        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
-        buildRecyclerViewConversetion();
+//        conversetionModelClass = new ArrayList<>();
+//        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
+//        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
+//        conversetionModelClass.add(new ConversetionModelClass("kk", "knkn", "djb", "jbdh", "hdh", "svhvx", 23));
+//        buildRecyclerViewConversetion();
 
     }
 
@@ -210,5 +233,58 @@ public class ViewConverationListFragment extends Fragment {
         recyclerViewConersation.setAdapter(conversetionAdapter);
 
     }
+
+    public void buildRecyclerViewConversetionClose() {
+
+        closeRv = view.findViewById(R.id.closerv);
+         closeRv.setHasFixedSize(true);
+        closeLiner = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+         closeRv.setLayoutManager(closeLiner);
+        closeAdapter = new CloseAdapter(closeModel);
+         closeRv.setAdapter(closeAdapter);
+
+    }
+
+
+    private void mathod() {
+        query=new HashMap<>();
+
+        Call<GetStatusAndChatResponse> call=loginService.GET_STATUS_AND_CHAT_RESPONSE_CALL(query);
+        call.enqueue(new Callback<GetStatusAndChatResponse>() {
+            @Override
+            public void onResponse(Call<GetStatusAndChatResponse> call, Response<GetStatusAndChatResponse> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getActivity(), response.code(), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    GetStatusAndChatResponse getStatusAndChatResponse= response.body();
+                    if(getStatusAndChatResponse.onlyOpen!=null){
+                        conversetionModelClass = new ArrayList<>();
+                        for (int i=0;i<=getStatusAndChatResponse.onlyOpen.size()-1;i++) {
+                            conversetionModelClass.add(new ConversetionModelClass(getStatusAndChatResponse.onlyOpen.get(i).user_name, getStatusAndChatResponse.onlyOpen.get(i).user_role, String.valueOf(getStatusAndChatResponse.onlyOpen.get(i).userId), getStatusAndChatResponse.onlyOpen.get(i).createdAt, getStatusAndChatResponse.onlyOpen.get(i).user_image,getStatusAndChatResponse.onlyOpen.get(i).message , 23));
+                        }
+                        buildRecyclerViewConversetion();
+                    }
+
+
+                    if(getStatusAndChatResponse.onlyClose!=null){
+                        closeModel = new ArrayList<>();
+                        for (int i=0;i<=getStatusAndChatResponse.onlyClose.size()-1;i++) {
+                            closeModel.add(new ConversetionModelClass(getStatusAndChatResponse.onlyClose.get(i).user_name, getStatusAndChatResponse.onlyClose.get(i).user_role, String.valueOf(getStatusAndChatResponse.onlyClose.get(i).userId), getStatusAndChatResponse.onlyClose.get(i).createdAt, getStatusAndChatResponse.onlyClose.get(i).user_image,getStatusAndChatResponse.onlyClose.get(i).message , 23));
+                            Log.i(TAG, "onResponse: "+i);
+                        }
+                        buildRecyclerViewConversetionClose();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetStatusAndChatResponse> call, Throwable t) {
+                Log.i(TAG, String.valueOf(t.toString()));
+            }
+        });
+    }
+
 
 }
