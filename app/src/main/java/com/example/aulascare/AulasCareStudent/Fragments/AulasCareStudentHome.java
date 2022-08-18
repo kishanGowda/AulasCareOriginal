@@ -7,15 +7,20 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.aulascare.AulasCareFragment.AulasCareSupportDirections;
 import com.example.aulascare.AulasCareFragment.SupporFragmentDirections;
 import com.example.aulascare.R;
 import com.google.android.material.card.MaterialCardView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +30,7 @@ import com.google.android.material.card.MaterialCardView;
 public class AulasCareStudentHome extends Fragment {
     MaterialCardView faqCard,supportCard,resourse;
     View view;
+    TextView kishan;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -72,6 +78,28 @@ public class AulasCareStudentHome extends Fragment {
         view= inflater.inflate(R.layout.fragment_aulas_care_student_home, container, false);
         NavController navController = NavHostFragment.findNavController(this);
         setUpViews();
+
+        kishan=view.findViewById(R.id.kishan);
+        String text = "First Color <font color=#ffcc00>Second Color</font>";
+        kishan.setText(Html.fromHtml(text));
+        //
+
+        //
+
+
+
+
+        SimpleDateFormat format = new SimpleDateFormat("MMMM yyyy");
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        Calendar cal3 = Calendar.getInstance();
+        cal1.add(Calendar.MONTH, -1);
+        System.out.println(format.format(cal1.getTime()));
+        cal2.add(Calendar.MONTH, -2);
+        System.out.println(format.format(cal2.getTime()));
+        cal3.add(Calendar.MONTH, -3);
+        System.out.println(format.format(cal3.getTime()));
+
 
 
         //faq question on touch

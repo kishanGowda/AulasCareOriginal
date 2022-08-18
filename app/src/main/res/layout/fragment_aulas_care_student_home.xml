@@ -39,7 +39,7 @@ tools:context=".AulasCareStudent.Fragments.AulasCareStudentHome">
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-
+        android:id="@+id/kishan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
